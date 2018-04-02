@@ -5,6 +5,9 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.Core;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,6 +28,21 @@ namespace MediaPlayer
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        private async void button_Click(object sender, RoutedEventArgs e)
+        {
+            FileOpenPicker picker = new FileOpenPicker();
+            picker.ViewMode = PickerViewMode.Thumbnail;
+
+            picker.FileTypeFilter.Add(".mp4");
+            picker.FileTypeFilter.Add(".mp3");
+            StorageFile file = await picker.PickSingleFileAsync();
+
+            if (file != null)
+            {
+                mediaPlayer.Source = MediaSource.CreateFromStorageFile(file);
+            }
         }
     }
 }
