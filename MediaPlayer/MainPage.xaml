@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="Gray">
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -16,7 +16,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button x:Name="button" Content="choose file" Click="button_Click"/>
+        <StackPanel Orientation="Horizontal" Background="Gray">
+            <Button x:Name="button" Content="choose file" Click="button_Click"/>
+            <Button x:Name="button_1" Content="play online" Click="button_1_Click"/>
+            <Button x:Name="button_2" Content="download" Click="button_2_Click"/>
+            <TextBlock x:Name="text" Grid.Row="1"></TextBlock>
+        </StackPanel>
         <MediaPlayerElement x:Name="mediaPlayer" AutoPlay="True" AreTransportControlsEnabled="True" Grid.Row="1" Grid.RowSpan="2" />
     </Grid>
 </Page>

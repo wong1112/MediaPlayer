@@ -8,6 +8,7 @@ using Windows.Foundation.Collections;
 using Windows.Media.Core;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -28,6 +29,7 @@ namespace MediaPlayer
         public MainPage()
         {
             this.InitializeComponent();
+
         }
 
         private async void button_Click(object sender, RoutedEventArgs e)
@@ -42,6 +44,45 @@ namespace MediaPlayer
             if (file != null)
             {
                 mediaPlayer.Source = MediaSource.CreateFromStorageFile(file);
+            }
+        }
+
+        private void button_1_Click(object sender, RoutedEventArgs e)
+        {
+            mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("http://www.neu.edu.cn/indexsource/neusong.mp3"));
+        }
+
+        private async void button_2_Click(object sender, RoutedEventArgs e)
+        {
+            Uri uri = new Uri("http://www.neu.edu.cn/indexsource/neusong.mp3");
+            var myMusics = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Music);
+            var myMusic = myMusics.SaveFolder;
+            var fileName = Path.GetFileName(uri.LocalPath);
+            try
+            {
+                StorageFile musicFile = await myMusic.CreateFileAsync(fileName, Windows.Storage.CreationCollisionOption.FailIfExists);
+                if (musicFile != null)
+                {
+                    Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
+
+                    IBuffer buffer;
+                    try
+                    {
+                        buffer = await httpClient.GetBufferAsync(uri);
+                    }
+                    catch (Exception ex)
+                    {
+                        text.Text = "download fail";
+                        return;
+                    }
+
+                    await FileIO.WriteBufferAsync(musicFile, buffer);
+                    text.Text = "download complete";
+                }
+            }
+            catch (Exception ex)
+            {
+                text.Text = "file exist";
             }
         }
     }
